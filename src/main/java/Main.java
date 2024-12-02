@@ -80,7 +80,7 @@ public class Main {
                     if(file.canExecute()){
                         String name = file.getName();
                         //System.out.println("checking: "+name);
-                        if(name.contains(command)){
+                        if(name.equals(command)){
                             return Optional.of(file.getAbsolutePath());
                         }
                     }
