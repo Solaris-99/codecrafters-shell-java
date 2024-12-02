@@ -1,9 +1,10 @@
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        // Uncomment this block to pass the first stage
+        List<String> builtins = new ArrayList<>();
+        builtins.add("echo");builtins.add("exit");builtins.add("type");
+
         while (true){
             System.out.print("$ ");
             Scanner scanner = new Scanner(System.in);
@@ -20,15 +21,29 @@ public class Main {
 
 
             if(input.isBlank()){continue;}
-            else if (command.equals("echo")) {
-
-                System.out.println(commandArgs);
-            } else if (input.equals("exit 0")) {
-                System.exit(0);
-            }
             else{
-                System.out.println(input + ": command not found");
+                switch (command){
+                    case "echo":
+                        System.out.println(commandArgs);
+                        break;
+                    case "exit":
+                        System.exit(Integer.parseInt(commandArgs));
+                    case "type":
+                        int ind = builtins.indexOf(commandArgs);
+                        String out;
+                        if(ind > -1){
+                            out = commandArgs + " is a shell builtin";
+                        }else{
+                            out = commandArgs + ": not found";
+                        }
+                        System.out.println(out);
+                        break;
+                    default:
+                        System.out.println(input + ": command not found");
+
+                }
             }
+
         }
 
     }
