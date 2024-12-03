@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 import java.io.File;
@@ -79,17 +80,14 @@ public class Main {
     }
 
     private static Optional<String> getPath(String command){
-        //change back to linux delimiter
         String[] pathDirs = PATH.split(":");
         for (String path : pathDirs){
-        //System.out.println("looking into: " + path);
             File dir = new File(path);
             File[] files = dir.listFiles();
             if (files != null) {
                 for(File file : files){
                     if(file.canExecute()){
                         String name = file.getName();
-                        //System.out.println("checking: "+name);
                         if(name.equals(command)){
                             return Optional.of(file.getAbsolutePath());
                         }
@@ -101,12 +99,25 @@ public class Main {
     }
 
     private static void changeDir(String path){
-        File dir = new File(path);
-        if(!dir.exists()){
-            System.out.printf("cd: %s: No such file or directory%n", path);
-            return;
+        try{
+            File dir;
+            if(path.startsWith(".")){
+                dir = new File(System.getProperty("user.dir"),path);
+            }
+            else{
+                dir = new File(path);
+            }
+            if(!dir.exists()){
+                System.out.printf("cd: %s: No such file or directory%n", path);
+                return;
+            }
+            System.setProperty("user.dir", dir.getCanonicalPath());
+            System.out.println(System.getProperty("user.dir"));
         }
-        System.setProperty("user.dir",path);
+        catch (IOException e){
+            System.out.printf("cd: %s: cannot be opened: %s%n", path, e.getMessage());
+        }
+
     }
 
 }
