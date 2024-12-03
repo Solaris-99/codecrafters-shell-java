@@ -12,6 +12,7 @@ public class Main {
         builtins.add("pwd");
         builtins.add("exit");
         builtins.add("type");
+        builtins.add("cd");
 
         while (true) {
             System.out.print("$ ");
@@ -29,6 +30,9 @@ public class Main {
 
             if (input.isBlank()) {
                 continue;
+            }
+            else if (command.equals("cd")){
+                changeDir(commandArgs);
             }
             else if (command.equals("pwd")) {
                 String cwd = System.getProperty("user.dir");
@@ -54,7 +58,6 @@ public class Main {
                 }
                 System.out.println(out);
             }
-
             else{
                 Optional<String> execPath = getPath(command);
                 if(execPath.isPresent()){
@@ -72,7 +75,6 @@ public class Main {
                     System.out.println(input + ": command not found");
                 }
             }
-
         }//loop end
     }
 
@@ -96,6 +98,15 @@ public class Main {
             }
         }
         return Optional.empty();
+    }
+
+    private static void changeDir(String path){
+        File dir = new File(path);
+        if(!dir.exists()){
+            System.out.printf("cd: %s: No such file or directory%n", path);
+            return;
+        }
+        System.setProperty("user.dir",path);
     }
 
 }
