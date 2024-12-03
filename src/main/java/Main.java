@@ -104,9 +104,13 @@ public class Main {
             if(path.startsWith(".")){
                 dir = new File(System.getProperty("user.dir"),path);
             }
+            else if(path.equals("~")){
+                dir = new File(System.getenv("HOME"));
+            }
             else{
                 dir = new File(path);
             }
+
             if(!dir.exists()){
                 System.out.printf("cd: %s: No such file or directory%n", path);
                 return;
