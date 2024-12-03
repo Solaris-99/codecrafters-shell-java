@@ -112,7 +112,6 @@ public class Main {
                 return;
             }
             System.setProperty("user.dir", dir.getCanonicalPath());
-            System.out.println(System.getProperty("user.dir"));
         }
         catch (IOException e){
             System.out.printf("cd: %s: cannot be opened: %s%n", path, e.getMessage());
