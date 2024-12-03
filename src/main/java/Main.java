@@ -9,6 +9,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         List<String> builtins = new ArrayList<>();
         builtins.add("echo");
+        builtins.add("pwd");
         builtins.add("exit");
         builtins.add("type");
 
@@ -28,6 +29,10 @@ public class Main {
 
             if (input.isBlank()) {
                 continue;
+            }
+            else if (command.equals("pwd")) {
+                String cwd = System.getProperty("user.dir");
+                System.out.println(cwd);
             }
             else if (command.equals("echo")){
                 System.out.println(commandArgs);
@@ -49,20 +54,23 @@ public class Main {
                 }
                 System.out.println(out);
             }
-            else if (getPath(command).isPresent()){
-                ProcessBuilder processBuilder = new ProcessBuilder(getPath(command).get(), commandArgs);
-                processBuilder.redirectErrorStream(true);
-                Process process = processBuilder.start();
 
-                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    System.out.println(line);
-                }
-            }
             else{
-                System.out.println(input + ": command not found");
+                Optional<String> execPath = getPath(command);
+                if(execPath.isPresent()){
+                    ProcessBuilder processBuilder = new ProcessBuilder(execPath.get(), commandArgs);
+                    processBuilder.redirectErrorStream(true);
+                    Process process = processBuilder.start();
 
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        System.out.println(line);
+                    }
+                }
+                else{
+                    System.out.println(input + ": command not found");
+                }
             }
 
         }//loop end
