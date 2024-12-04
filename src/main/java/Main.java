@@ -42,8 +42,9 @@ public class Main {
                 }
                 case "echo" -> {
                     for(int i = 0; i < commandArgs.getArgCount(); i++){
-                        System.out.println(commandArgs.getArg(i));
+                        System.out.print(commandArgs.getArg(i));
                     }
+                    System.out.println();
                 }
                 case "exit" -> System.exit(Integer.parseInt(commandArgs.getArg(0)));
                 case "type" -> {

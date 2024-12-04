@@ -41,7 +41,12 @@ public class Arguments {
         int length = argString.length()-1;
         int counter = 0;
         for(char c : argString.toCharArray()){
-            if (c == '\'' && !doubleQuotes){
+            if(escaping){
+                builder.append(c);
+                escaping = false;
+                continue;
+            }
+            else if (c == '\'' && !doubleQuotes){
                 simpleQuotes = !simpleQuotes;
             }
             else if( c == '"' && !escaping && !simpleQuotes){
@@ -49,20 +54,21 @@ public class Arguments {
             }
             else if( c == '\\' && doubleQuotes){
                 escaping = true;
-                builder.append(c);
-                continue;
             }
             else{
                 builder.append(c);
             }
             if ( (c == separator || counter == length) && (!simpleQuotes && !doubleQuotes)){
                String token = builder.toString();
-               tokens.add(token);
+               if(!token.isBlank()){
+                   tokens.add(token);
+               }
+               builder = new StringBuilder();
             }
-
-            if(escaping){ escaping = false;}
             counter++;
         }
+        //System.out.println("## tokens ##");
+        //System.out.println(tokens);
     }
 
 
