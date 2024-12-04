@@ -1,8 +1,5 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.*;
-import java.io.File;
+import java.io.*;
 
 public class Main {
     static final String PATH = System.getenv("PATH");
@@ -14,6 +11,7 @@ public class Main {
         builtins.add("exit");
         builtins.add("type");
         builtins.add("cd");
+        builtins.add("cat");
 
         while (true) {
             System.out.print("$ ");
@@ -59,6 +57,19 @@ public class Main {
                         out = arg0 + ": not found";
                     }
                     System.out.println(out);
+                }
+                case "cat" -> {
+                    for (int i = 0; i < commandArgs.getArgCount(); i++){
+                        try (BufferedReader reader = new BufferedReader(new FileReader(commandArgs.getArg(i)))) {
+                            String line;
+                            while ((line = reader.readLine()) != null) {
+                                System.out.print(line);
+                            }
+                        } catch (Exception e) {
+                            System.out.println("error reading file: "+ e.getMessage());
+                        }
+                    }
+
                 }
                 default -> {
                     Optional<String> execPath = getPath(command);
