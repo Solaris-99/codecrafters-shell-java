@@ -30,6 +30,9 @@ public class Arguments {
         return tokens.size();
     }
 
+    public List<String> getTokens() {
+        return tokens;
+    }
 
     private void tokenize() throws Exception {
         if(argString == null){throw new Exception("No arguments provided");}

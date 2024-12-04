@@ -11,7 +11,6 @@ public class Main {
         builtins.add("exit");
         builtins.add("type");
         builtins.add("cd");
-        builtins.add("cat");
 
         while (true) {
             System.out.print("$ ");
@@ -58,23 +57,12 @@ public class Main {
                     }
                     System.out.println(out);
                 }
-                case "cat" -> {
-                    for (int i = 0; i < commandArgs.getArgCount(); i++){
-                        try (BufferedReader reader = new BufferedReader(new FileReader(commandArgs.getArg(i)))) {
-                            String line;
-                            while ((line = reader.readLine()) != null) {
-                                System.out.print(line);
-                            }
-                        } catch (Exception e) {
-                            System.out.println("error reading file: "+ e.getMessage());
-                        }
-                    }
-
-                }
                 default -> {
                     Optional<String> execPath = getPath(command);
                     if (execPath.isPresent()) {
-                        ProcessBuilder processBuilder = new ProcessBuilder(execPath.get(), commandArgs.getArg(0));
+
+
+                        ProcessBuilder processBuilder = new ProcessBuilder(execPath.get(), String.join(" ", commandArgs.getTokens()));
                         processBuilder.redirectErrorStream(true);
                         Process process = processBuilder.start();
 
