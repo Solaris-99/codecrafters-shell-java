@@ -58,9 +58,17 @@ public class Arguments {
             else if( c == '"' && !escaping && !simpleQuotes){
                 doubleQuotes = !doubleQuotes;
             }
-            else if( c == '\\' && !simpleQuotes && !doubleQuotes){
+            else if( c == '\\' && !simpleQuotes ){
                 //TODO: Can only escape based on the next char.
-                escaping = true;
+                if(doubleQuotes){
+                    char nextChar = argString.charAt(counter+1);
+                    if( nextChar == '\\' || nextChar == '"' || nextChar == '$'){
+                        escaping = true;
+                    }
+                }else{
+                    escaping = true;
+                }
+
             }
             else if(c != separator || (c == separator && (doubleQuotes || simpleQuotes) )){
                 //append whitespace IF AND ONLY IF quoting is taking place
