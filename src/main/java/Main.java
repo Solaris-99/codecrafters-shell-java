@@ -18,14 +18,13 @@ public class Main {
             String input = scanner.nextLine();
             String command;
             Arguments commandArgs = new Arguments();
-            String commandArgsString = "";
             if (input.isBlank()) {
                 continue;
             }
             else if (input.contains(" ")) {
                 int delim = input.indexOf(" ");
                 command = input.substring(0, delim);
-                commandArgsString = input.substring(delim + 1);
+                String commandArgsString = input.substring(delim + 1);
                 commandArgs.setArgString(commandArgsString);
             } else {
                 command = input;
@@ -61,9 +60,10 @@ public class Main {
                 default -> {
                     Optional<String> execPath = getPath(command);
                     if (execPath.isPresent()) {
-
-
-                        ProcessBuilder processBuilder = new ProcessBuilder(execPath.get(), commandArgsString);
+                        List<String> commandArr = new ArrayList<>();
+                        commandArr.add(execPath.get());
+                        commandArr.addAll(commandArgs.getTokens());
+                        ProcessBuilder processBuilder = new ProcessBuilder(commandArr);
                         processBuilder.redirectErrorStream(true);
                         Process process = processBuilder.start();
 
