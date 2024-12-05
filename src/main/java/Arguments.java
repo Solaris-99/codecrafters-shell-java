@@ -55,7 +55,11 @@ public class Arguments {
             else if( c == '"' && !escaping && !simpleQuotes){
                 doubleQuotes = !doubleQuotes;
             }
-            else if( c == '\\' && doubleQuotes){
+            else if( c == '\\' && !simpleQuotes){
+                if(doubleQuotes){
+                    //TODO: Can only escape based on the next char.
+                }
+
                 escaping = true;
             }
             else if(c != separator || (c == separator && (doubleQuotes || simpleQuotes) )){
