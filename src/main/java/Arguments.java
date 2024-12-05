@@ -58,7 +58,10 @@ public class Arguments {
             else if( c == '\\' && doubleQuotes){
                 escaping = true;
             }
-            else if (c != ' '){
+            else if(c != separator || (c == separator && (doubleQuotes || simpleQuotes) )){
+                //append whitespace IF AND ONLY IF quoting is taking place
+                //dobleQuotes -> true && simpleQuotes == true then append whitespace
+                //otherwhise do nothing, ONLY IF whitespace
 
                 builder.append(c);
             }
