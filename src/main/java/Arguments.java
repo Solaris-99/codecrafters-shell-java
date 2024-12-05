@@ -45,6 +45,24 @@ public class Arguments {
         int counter = 0;
         // abc\ def
         for(char c : argString.toCharArray()){
+
+            if(counter == length){
+                if((c == '\'' && simpleQuotes) || (c == '"' && doubleQuotes)){
+                    String token = builder.toString();
+                    if(!token.isBlank()){
+                        tokens.add(token);
+                    }
+                }
+                else if( (c != '\'' && !simpleQuotes && c != '"' && !doubleQuotes ) ){
+                    builder.append(c);
+                    String token = builder.toString();
+                    if(!token.isBlank()){
+                        tokens.add(token);
+                    }
+                }
+                break;
+            }
+
             if(escaping){
                 //System.out.println("escaping, appending: "+c);
                 builder.append(c);
@@ -55,17 +73,24 @@ public class Arguments {
             else if (c == '\'' && !doubleQuotes){
                 simpleQuotes = !simpleQuotes;
             }
-            else if( c == '"' && !escaping && !simpleQuotes){
+            else if( c == '"' && !simpleQuotes){
                 doubleQuotes = !doubleQuotes;
             }
             else if( c == '\\' && !simpleQuotes ){
                 //TODO: Can only escape based on the next char.
+
                 if(doubleQuotes){
                     char nextChar = argString.charAt(counter+1);
-                    if( nextChar == '\\' || nextChar == '"' || nextChar == '$'){
+                    if( nextChar == '\\' || nextChar == '"' || nextChar == '$' || nextChar == '\n'){
                         escaping = true;
                     }
-                }else{
+                    else{
+                        builder.append(c);
+                    }
+
+                }
+                else
+                {
                     escaping = true;
                 }
 
@@ -78,13 +103,15 @@ public class Arguments {
 
                 builder.append(c);
             }
-            if ( (c == separator && !simpleQuotes && !doubleQuotes) || counter == length){
+            if ( c == separator && !simpleQuotes && !doubleQuotes){
                String token = builder.toString();
                if(!token.isBlank()){
                    tokens.add(token);
                }
                builder = new StringBuilder();
             }
+
+
             counter++;
         }
         //System.out.println("## tokens ##");
