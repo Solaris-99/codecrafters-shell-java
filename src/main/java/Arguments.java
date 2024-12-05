@@ -58,7 +58,8 @@ public class Arguments {
             else if( c == '\\' && doubleQuotes){
                 escaping = true;
             }
-            else{
+            else if (c != ' '){
+
                 builder.append(c);
             }
             if ( (c == separator || counter == length) && (!simpleQuotes && !doubleQuotes)){

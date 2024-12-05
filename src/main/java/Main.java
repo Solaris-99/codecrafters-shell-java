@@ -63,6 +63,8 @@ public class Main {
                         List<String> commandArr = new ArrayList<>();
                         commandArr.add(execPath.get());
                         commandArr.addAll(commandArgs.getTokens());
+                        //System.out.println("## Command ##");
+                        //System.out.println(commandArr);
                         ProcessBuilder processBuilder = new ProcessBuilder(commandArr);
                         processBuilder.redirectErrorStream(true);
                         Process process = processBuilder.start();
