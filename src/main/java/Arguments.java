@@ -43,10 +43,13 @@ public class Arguments {
         char separator = ' ';
         int length = argString.length()-1;
         int counter = 0;
+        // abc\ def
         for(char c : argString.toCharArray()){
             if(escaping){
+                //System.out.println("escaping, appending: "+c);
                 builder.append(c);
                 escaping = false;
+                counter++;
                 continue;
             }
             else if (c == '\'' && !doubleQuotes){
@@ -55,21 +58,19 @@ public class Arguments {
             else if( c == '"' && !escaping && !simpleQuotes){
                 doubleQuotes = !doubleQuotes;
             }
-            else if( c == '\\' && !simpleQuotes){
-                if(doubleQuotes){
-                    //TODO: Can only escape based on the next char.
-                }
-
+            else if( c == '\\' && !simpleQuotes && !doubleQuotes){
+                //TODO: Can only escape based on the next char.
                 escaping = true;
             }
             else if(c != separator || (c == separator && (doubleQuotes || simpleQuotes) )){
                 //append whitespace IF AND ONLY IF quoting is taking place
                 //dobleQuotes -> true && simpleQuotes == true then append whitespace
                 //otherwhise do nothing, ONLY IF whitespace
+                //System.out.println("appending: " + c);
 
                 builder.append(c);
             }
-            if ( (c == separator || counter == length) && (!simpleQuotes && !doubleQuotes)){
+            if ( (c == separator && !simpleQuotes && !doubleQuotes) || counter == length){
                String token = builder.toString();
                if(!token.isBlank()){
                    tokens.add(token);
