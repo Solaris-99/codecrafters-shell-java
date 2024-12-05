@@ -38,10 +38,7 @@ public class Main {
                     System.out.println(cwd);
                 }
                 case "echo" -> {
-                    for(int i = 0; i < commandArgs.getArgCount(); i++){
-                        System.out.print(commandArgs.getArg(i));
-                    }
-                    System.out.println();
+                    System.out.println(String.join(" ", commandArgs.getTokens()));
                 }
                 case "exit" -> System.exit(Integer.parseInt(commandArgs.getArg(0)));
                 case "type" -> {
