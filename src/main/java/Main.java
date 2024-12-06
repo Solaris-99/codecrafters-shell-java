@@ -38,7 +38,16 @@ public class Main {
                     System.out.println(cwd);
                 }
                 case "echo" -> {
-                    System.out.println(String.join(" ", commandArgs.getTokens()));
+                    List<String> tokens = commandArgs.getTokens();
+                    int tokenSize = tokens.size();
+                    StringBuilder builder = new StringBuilder();
+                    for (int i = 1; i <  tokenSize; i++ ){
+                        builder.append(tokens.get(i));
+                        if(i+1 < tokenSize){
+                            builder.append(" ");
+                        }
+                    }
+                    System.out.println(builder);
                 }
                 case "exit" -> System.exit(Integer.parseInt(commandArgs.getArg(1)));
                 case "type" -> {

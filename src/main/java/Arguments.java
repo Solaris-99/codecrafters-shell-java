@@ -119,7 +119,6 @@ public class Arguments {
                builder = new StringBuilder();
             }
 
-
             counter++;
         }
         //System.out.println("## tokens ##");
