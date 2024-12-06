@@ -16,23 +16,23 @@ public class Main {
             System.out.print("$ ");
             Scanner scanner = new Scanner(System.in);
             String input = scanner.nextLine();
-            String command;
-            Arguments commandArgs = new Arguments();
-            if (input.isBlank()) {
-                continue;
-            }
-            else if (input.contains(" ")) {
-                int delim = input.indexOf(" ");
-                command = input.substring(0, delim);
-                String commandArgsString = input.substring(delim + 1);
-                commandArgs.setArgString(commandArgsString);
-            } else {
-                command = input;
-            }
+            Arguments commandArgs = new Arguments(input);
+            String command = commandArgs.getArg(0);
+//            if (input.isBlank()) {
+//                continue;
+//            }
+//            else if (input.contains(" ")) {
+//                int delim = input.indexOf(" ");
+//                command = input.substring(0, delim);
+//                String commandArgsString = input.substring(delim + 1);
+//                commandArgs.setArgString(commandArgsString);
+//            } else {
+//                command = input;
+//            }
 
 
             switch (command) {
-                case "cd" -> changeDir(commandArgs.getArg(0));
+                case "cd" -> changeDir(commandArgs.getArg(1));
                 case "pwd" -> {
                     String cwd = System.getProperty("user.dir");
                     System.out.println(cwd);
@@ -40,9 +40,9 @@ public class Main {
                 case "echo" -> {
                     System.out.println(String.join(" ", commandArgs.getTokens()));
                 }
-                case "exit" -> System.exit(Integer.parseInt(commandArgs.getArg(0)));
+                case "exit" -> System.exit(Integer.parseInt(commandArgs.getArg(1)));
                 case "type" -> {
-                    String arg0 = commandArgs.getArg(0);
+                    String arg0 = commandArgs.getArg(1);
                     int ind = builtins.indexOf(arg0);
                     String out;
                     if (ind > -1) {
@@ -55,17 +55,13 @@ public class Main {
                     System.out.println(out);
                 }
                 default -> {
-                    Arguments argComm = new Arguments(command);
-                    Optional<String> execPath = getPath(String.join(" ", argComm.getTokens()));
+                    Optional<String> execPath = getPath(commandArgs.getArg(0));
                     if (execPath.isPresent()) {
-                        List<String> commandArr = new ArrayList<>();
-                        commandArr.add(execPath.get());
-                        commandArr.addAll(commandArgs.getTokens());
 
                         //System.out.println("## Command ##");
                         //System.out.println(commandArr);
 
-                        ProcessBuilder processBuilder = new ProcessBuilder(commandArr);
+                        ProcessBuilder processBuilder = new ProcessBuilder(commandArgs.getTokens());
                         processBuilder.redirectErrorStream(true);
                         Process process = processBuilder.start();
 
@@ -86,7 +82,7 @@ public class Main {
 
     private static Optional<String> getPath(String command){
         //for windows: split by ;
-        String[] pathDirs = PATH.split(":");
+        String[] pathDirs = PATH.split(";");
         for (String path : pathDirs){
             File dir = new File(path);
             File[] files = dir.listFiles();
