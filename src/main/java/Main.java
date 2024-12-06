@@ -55,13 +55,16 @@ public class Main {
                     System.out.println(out);
                 }
                 default -> {
-                    Optional<String> execPath = getPath(command);
+                    Arguments argComm = new Arguments(command);
+                    Optional<String> execPath = getPath(String.join(" ", argComm.getTokens()));
                     if (execPath.isPresent()) {
                         List<String> commandArr = new ArrayList<>();
                         commandArr.add(execPath.get());
                         commandArr.addAll(commandArgs.getTokens());
+
                         //System.out.println("## Command ##");
                         //System.out.println(commandArr);
+
                         ProcessBuilder processBuilder = new ProcessBuilder(commandArr);
                         processBuilder.redirectErrorStream(true);
                         Process process = processBuilder.start();
@@ -82,6 +85,7 @@ public class Main {
     }
 
     private static Optional<String> getPath(String command){
+        //for windows: split by ;
         String[] pathDirs = PATH.split(":");
         for (String path : pathDirs){
             File dir = new File(path);
