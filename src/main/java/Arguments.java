@@ -43,8 +43,19 @@ public class Arguments {
         char separator = ' ';
         int length = argString.length()-1;
         int counter = 0;
-        // abc\ def
+        // abc\"
         for(char c : argString.toCharArray()){
+
+
+            if(escaping){
+                //System.out.println("escaping, appending: "+c);
+                builder.append(c);
+                if(counter != length){
+                    escaping = false;
+                    counter++;
+                    continue;
+                }
+            }
 
             if(counter == length){
                 if((c == '\'' && simpleQuotes) || (c == '"' && doubleQuotes)){
@@ -53,8 +64,12 @@ public class Arguments {
                         tokens.add(token);
                     }
                 }
-                else if( (c != '\'' && !simpleQuotes && c != '"' && !doubleQuotes ) ){
-                    builder.append(c);
+                else if( !simpleQuotes && !doubleQuotes ){
+                    //if we are escaping, c is already appended.
+                    if (!escaping){
+                        builder.append(c);
+                    }
+
                     String token = builder.toString();
                     if(!token.isBlank()){
                         tokens.add(token);
@@ -63,13 +78,6 @@ public class Arguments {
                 break;
             }
 
-            if(escaping){
-                //System.out.println("escaping, appending: "+c);
-                builder.append(c);
-                escaping = false;
-                counter++;
-                continue;
-            }
             else if (c == '\'' && !doubleQuotes){
                 simpleQuotes = !simpleQuotes;
             }
@@ -95,7 +103,7 @@ public class Arguments {
                 }
 
             }
-            else if(c != separator || (c == separator && (doubleQuotes || simpleQuotes) )){
+            else if(c != separator || doubleQuotes || simpleQuotes){
                 //append whitespace IF AND ONLY IF quoting is taking place
                 //dobleQuotes -> true && simpleQuotes == true then append whitespace
                 //otherwhise do nothing, ONLY IF whitespace
