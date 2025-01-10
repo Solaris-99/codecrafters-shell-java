@@ -4,6 +4,7 @@ import java.io.*;
 public class Main {
     static final String PATH = System.getenv("PATH");
     static final PrintStream STDOUT = System.out;
+    static final PrintStream STDERR = System.err;
 
     public static void main(String[] args) throws Exception {
         List<String> builtins = new ArrayList<>();
@@ -15,6 +16,7 @@ public class Main {
 
         while (true) {
             System.setOut(STDOUT);
+            System.setErr(STDERR);
             System.out.print("$ ");
             Scanner scanner = new Scanner(System.in);
             String input = scanner.nextLine();
@@ -50,12 +52,13 @@ public class Main {
                     String out;
                     if (ind > -1) {
                         out = arg0 + " is a shell builtin";
+                        System.out.println(out);
                     } else if (getPath(arg0).isPresent()) {
                         out = arg0 + " is " + getPath(arg0).get();
+                        System.out.println(out);
                     } else {
-                        out = arg0 + ": not found";
+                        System.err.println(arg0 + ": not found");
                     }
-                    System.out.println(out);
                 }
                 default -> {
                     Optional<String> execPath = getPath(commandArgs.getArg(0));
@@ -65,7 +68,6 @@ public class Main {
                         //System.out.println(commandArr);
 
                         ProcessBuilder processBuilder = new ProcessBuilder(commandArgs.getTokens());
-                        //processBuilder.redirectErrorStream(true);
                         Process process = processBuilder.start();
 
                         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -81,7 +83,7 @@ public class Main {
 
                     }
                     else {
-                        System.out.println(input + ": command not found");
+                        System.err.println(input + ": command not found");
                     }
                 }
             }//switch end
@@ -139,17 +141,23 @@ public class Main {
         if(stdOutIndex < 0 ){
             stdOutIndex = tokens.indexOf("1>");
         }
-        if(stdOutIndex > 0){
-            String filePath = arguments.getArg(stdOutIndex+1);
+        int stdErrIndex = tokens.indexOf("2>");
+        int[] arrOutputs = {stdOutIndex, stdErrIndex};
+        for(int index : arrOutputs){
+            if(index < 0){
+                continue;
+            }
+            String filePath = arguments.getArg(index+1);
             try {
                 System.setOut(new PrintStream(filePath));
             }
             catch (FileNotFoundException e) {
-                System.out.printf("%s: %s: No such file or directory%n",arguments.getArg(0),filePath);
+                System.err.printf("%s: %s: No such file or directory%n",arguments.getArg(0),filePath);
             }
-            tokens.remove(stdOutIndex + 1);
-            tokens.remove(stdOutIndex);
+            tokens.remove(index + 1);
+            tokens.remove(index);
         }
+
 
     }
 
