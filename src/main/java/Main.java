@@ -14,9 +14,13 @@ public class Main {
         builtins.add("cd");
 
         while (true) {
+            System.setOut(STDOUT);
             System.out.print("$ ");
             Scanner scanner = new Scanner(System.in);
             String input = scanner.nextLine();
+            if(input.isBlank()){
+                continue;
+            }
             Arguments commandArgs = new Arguments(input);
             setOutput(commandArgs);
             String command = commandArgs.getArg(0);
@@ -124,7 +128,6 @@ public class Main {
     }
 
     private static void setOutput(Arguments arguments){
-        System.setOut(STDOUT);
         List <String> tokens = arguments.getTokens();
         int stdOutIndex = tokens.indexOf(">");
         if(stdOutIndex < 0 ){
@@ -138,6 +141,8 @@ public class Main {
             catch (FileNotFoundException e) {
                 System.out.printf("%s: %s: No such file or directory%n",arguments.getArg(0),filePath);
             }
+            tokens.remove(stdOutIndex);
+            tokens.remove(stdOutIndex + 1);
         }
 
     }
