@@ -114,8 +114,8 @@ public class Arguments {
 
             counter++;
         }
-        System.out.println("## tokens ##");
-        System.out.println(tokens);
+        //System.out.println("## tokens ##");
+        //System.out.println(tokens);
     }
 
 
