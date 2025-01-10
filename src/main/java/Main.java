@@ -69,10 +69,16 @@ public class Main {
                         Process process = processBuilder.start();
 
                         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                        BufferedReader errReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
                         String line;
                         while ((line = reader.readLine()) != null) {
                             System.out.println(line);
                         }
+                        String err = errReader.readLine();
+                        if(err != null){
+                            System.err.println(err);
+                        }
+
                     }
                     else {
                         System.out.println(input + ": command not found");
@@ -85,7 +91,7 @@ public class Main {
 
     private static Optional<String> getPath(String command){
         //for windows: split by ;
-        String[] pathDirs = PATH.split(":");
+        String[] pathDirs = PATH.split(File.pathSeparator);
         for (String path : pathDirs){
             File dir = new File(path);
             File[] files = dir.listFiles();
