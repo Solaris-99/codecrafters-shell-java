@@ -1,1 +1,1 @@
-node 2> test.txt: command not found
+node.exe: bad option: -a

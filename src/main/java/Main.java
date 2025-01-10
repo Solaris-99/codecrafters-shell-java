@@ -92,7 +92,6 @@ public class Main {
     }
 
     private static Optional<String> getPath(String command){
-        //for windows: split by ;
         String[] pathDirs = PATH.split(File.pathSeparator);
         for (String path : pathDirs){
             File dir = new File(path);
@@ -142,22 +141,29 @@ public class Main {
             stdOutIndex = tokens.indexOf("1>");
         }
         int stdErrIndex = tokens.indexOf("2>");
-        int[] arrOutputs = {stdOutIndex, stdErrIndex};
-        for(int index : arrOutputs){
-            if(index < 0){
-                continue;
-            }
-            String filePath = arguments.getArg(index+1);
+
+        if(stdOutIndex >= 0 ){
+            String filePath = arguments.getArg(stdOutIndex+1);
             try {
                 System.setOut(new PrintStream(filePath));
             }
             catch (FileNotFoundException e) {
                 System.err.printf("%s: %s: No such file or directory%n",arguments.getArg(0),filePath);
             }
-            tokens.remove(index + 1);
-            tokens.remove(index);
+            tokens.remove(stdOutIndex + 1);
+            tokens.remove(stdOutIndex);
         }
-
+        if(stdErrIndex >= 0){
+            String filePath = arguments.getArg(stdErrIndex+1);
+            try {
+                System.setErr(new PrintStream(filePath));
+            }
+            catch (FileNotFoundException e) {
+                System.err.printf("%s: %s: No such file or directory%n",arguments.getArg(0),filePath);
+            }
+            tokens.remove(stdErrIndex + 1);
+            tokens.remove(stdErrIndex);
+        }
 
     }
 
