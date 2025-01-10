@@ -131,7 +131,7 @@ public class Main {
         List <String> tokens = arguments.getTokens();
         int stdOutIndex = tokens.indexOf(">");
         if(stdOutIndex < 0 ){
-            tokens.indexOf("1>");
+            stdOutIndex = tokens.indexOf("1>");
         }
         if(stdOutIndex > 0){
             String filePath = arguments.getArg(stdOutIndex+1);
