@@ -11,13 +11,13 @@ public class Arguments {
         tokens = new ArrayList<>();
     }
 
-    public Arguments(String arg) throws Exception {
+    public Arguments(String arg) throws IllegalArgumentException {
         argString = arg;
         tokens = new ArrayList<>();
         tokenize();
     }
 
-    public void setArgString(String argString) throws Exception {
+    public void setArgString(String argString) throws IllegalArgumentException {
         this.argString = argString;
         tokenize();
     }
@@ -34,8 +34,8 @@ public class Arguments {
         return tokens;
     }
 
-    private void tokenize() throws Exception {
-        if(argString == null){throw new Exception("No arguments provided");}
+    private void tokenize() throws IllegalArgumentException {
+        if(argString == null){throw new IllegalArgumentException("No arguments provided");}
         StringBuilder builder = new StringBuilder();
         boolean simpleQuotes = false;
         boolean doubleQuotes = false;
@@ -43,7 +43,6 @@ public class Arguments {
         char separator = ' ';
         int length = argString.length()-1;
         int counter = 0;
-        // abc\"
         for(char c : argString.toCharArray()){
 
 
@@ -101,14 +100,8 @@ public class Arguments {
                 {
                     escaping = true;
                 }
-
             }
             else if(c != separator || doubleQuotes || simpleQuotes){
-                //append whitespace IF AND ONLY IF quoting is taking place
-                //dobleQuotes -> true && simpleQuotes == true then append whitespace
-                //otherwhise do nothing, ONLY IF whitespace
-                //System.out.println("appending: " + c);
-
                 builder.append(c);
             }
             if ( c == separator && !simpleQuotes && !doubleQuotes){

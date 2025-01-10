@@ -3,6 +3,7 @@ import java.io.*;
 
 public class Main {
     static final String PATH = System.getenv("PATH");
+    static final PrintStream STDOUT = System.out;
 
     public static void main(String[] args) throws Exception {
         List<String> builtins = new ArrayList<>();
@@ -17,19 +18,8 @@ public class Main {
             Scanner scanner = new Scanner(System.in);
             String input = scanner.nextLine();
             Arguments commandArgs = new Arguments(input);
+            setOutput(commandArgs);
             String command = commandArgs.getArg(0);
-//            if (input.isBlank()) {
-//                continue;
-//            }
-//            else if (input.contains(" ")) {
-//                int delim = input.indexOf(" ");
-//                command = input.substring(0, delim);
-//                String commandArgsString = input.substring(delim + 1);
-//                commandArgs.setArgString(commandArgsString);
-//            } else {
-//                command = input;
-//            }
-
 
             switch (command) {
                 case "cd" -> changeDir(commandArgs.getArg(1));
@@ -130,6 +120,24 @@ public class Main {
         }
         catch (IOException e){
             System.out.printf("cd: %s: cannot be opened: %s%n", path, e.getMessage());
+        }
+    }
+
+    private static void setOutput(Arguments arguments){
+        System.setOut(STDOUT);
+        List <String> tokens = arguments.getTokens();
+        int stdOutIndex = tokens.indexOf(">");
+        if(stdOutIndex < 0 ){
+            tokens.indexOf("1>");
+        }
+        if(stdOutIndex > 0){
+            String filePath = arguments.getArg(stdOutIndex+1);
+            try {
+                System.setOut(new PrintStream(filePath));
+            }
+            catch (FileNotFoundException e) {
+                System.out.printf("%s: %s: No such file or directory%n",arguments.getArg(0),filePath);
+            }
         }
 
     }
