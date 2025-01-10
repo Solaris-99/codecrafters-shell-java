@@ -141,8 +141,8 @@ public class Main {
             catch (FileNotFoundException e) {
                 System.out.printf("%s: %s: No such file or directory%n",arguments.getArg(0),filePath);
             }
-            tokens.remove(stdOutIndex);
             tokens.remove(stdOutIndex + 1);
+            tokens.remove(stdOutIndex);
         }
 
     }
