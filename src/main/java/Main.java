@@ -65,7 +65,7 @@ public class Main {
                         //System.out.println(commandArr);
 
                         ProcessBuilder processBuilder = new ProcessBuilder(commandArgs.getTokens());
-                        processBuilder.redirectErrorStream(true);
+                        //processBuilder.redirectErrorStream(true);
                         Process process = processBuilder.start();
 
                         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
