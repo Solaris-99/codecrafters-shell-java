@@ -46,6 +46,10 @@ public class Main {
                     System.out.println(builder);
                 }
                 case "exit" -> System.exit(Integer.parseInt(commandArgs.getArg(1)));
+                case "append" ->{
+                    System.out.append("appended text");
+                    System.out.println(commandArgs.getArg(1));
+                }
                 case "type" -> {
                     String arg0 = commandArgs.getArg(1);
                     int ind = builtins.indexOf(arg0);
@@ -136,35 +140,80 @@ public class Main {
 
     private static void setOutput(Arguments arguments){
         List <String> tokens = arguments.getTokens();
+
         int stdOutIndex = tokens.indexOf(">");
         if(stdOutIndex < 0 ){
             stdOutIndex = tokens.indexOf("1>");
         }
         int stdErrIndex = tokens.indexOf("2>");
 
-        if(stdOutIndex >= 0 ){
-            String filePath = arguments.getArg(stdOutIndex+1);
-            try {
-                System.setOut(new PrintStream(filePath));
-            }
-            catch (FileNotFoundException e) {
-                System.err.printf("%s: %s: No such file or directory%n",arguments.getArg(0),filePath);
-            }
-            tokens.remove(stdOutIndex + 1);
-            tokens.remove(stdOutIndex);
+        int stdOutAppend = tokens.indexOf(">>");
+        if(stdOutAppend < 0 ){
+            stdOutAppend = tokens.indexOf("1>>");
         }
-        if(stdErrIndex >= 0){
-            String filePath = arguments.getArg(stdErrIndex+1);
-            try {
-                System.setErr(new PrintStream(filePath));
-            }
-            catch (FileNotFoundException e) {
-                System.err.printf("%s: %s: No such file or directory%n",arguments.getArg(0),filePath);
-            }
-            tokens.remove(stdErrIndex + 1);
-            tokens.remove(stdErrIndex);
-        }
+        int stdErrAppend = tokens.indexOf("2>>");
 
+
+        if(stdOutIndex >= 0 || stdOutAppend >= 0){
+            boolean appending = false;
+            int opInd = stdOutIndex;
+            if ( stdOutAppend >= 0 ){
+                appending = true;
+                opInd = stdOutAppend;
+            }
+
+            String filePath = new File(System.getProperty("user.dir"),arguments.getArg(opInd+1)).getPath();
+
+            try {
+                if(appending){
+                    String text = readFile(filePath);
+                    System.setOut(new PrintStream(filePath));
+                    System.out.append(text);
+                }
+                else{
+                    System.setOut(new PrintStream(filePath));
+                }
+            }
+            catch (IOException e) {
+                System.err.printf("%s: %s: No such file or directory%n",arguments.getArg(0),filePath);
+            }
+            tokens.remove(opInd + 1);
+            tokens.remove(opInd);
+        }
+        if(stdErrIndex >= 0 || stdErrAppend >= 0){
+            boolean appending = false;
+            int opInd = stdErrIndex;
+            if ( stdErrAppend >= 0 ){
+                appending = true;
+                opInd = stdErrAppend;
+            }
+            String filePath = arguments.getArg(opInd+1);
+            try {
+                if(appending){
+                    String text = readFile(filePath);
+                    System.setErr(new PrintStream(filePath));
+                    System.err.append(text);
+                }
+                else{
+                    System.setErr(new PrintStream(filePath));;
+                }
+
+            }
+            catch (IOException e) {
+                System.err.printf("%s: %s: No such file or directory%n",arguments.getArg(0),filePath);
+            }
+            tokens.remove(opInd + 1);
+            tokens.remove(opInd);
+        }
     }
 
+    private static String readFile(String path) throws IOException {
+        FileReader fr = new FileReader(path);
+        StringBuilder builder = new StringBuilder();
+        int i;
+        while ((i=fr.read()) != -1){
+            builder.append((char) i );
+        }
+        return builder.toString();
+    }
 }
