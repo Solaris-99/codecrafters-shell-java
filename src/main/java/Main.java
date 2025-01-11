@@ -161,18 +161,23 @@ public class Main {
                 appending = true;
                 opInd = stdOutAppend;
             }
-            String filePath;
             String pathArg = arguments.getArg(opInd+1);
+            boolean exists;
+            File file;
+            String filePath;
             if(pathArg.startsWith(".")){
-                filePath = new File(System.getProperty("user.dir"),pathArg).getPath();
+                file = new File(System.getProperty("user.dir"), pathArg);
+
             }
             else{
-                filePath = new File(pathArg).getPath();
+                file = new File(pathArg);
             }
+            filePath = file.getPath();
+            exists = file.exists();
 
 
             try {
-                if(appending){
+                if(appending && exists){
                     String text = readFile(filePath);
                     System.setOut(new PrintStream(filePath));
                     System.out.append(text);
@@ -194,17 +199,22 @@ public class Main {
                 appending = true;
                 opInd = stdErrAppend;
             }
-            String filePath;
+            boolean exists;
             String pathArg = arguments.getArg(opInd+1);
+            File file;
+            String filePath;
             if(pathArg.startsWith(".")){
-                filePath = new File(System.getProperty("user.dir"),pathArg).getPath();
+                file = new File(System.getProperty("user.dir"), pathArg);
+
             }
             else{
-                filePath = new File(pathArg).getPath();
+                file = new File(pathArg);
             }
+            filePath = file.getPath();
+            exists = file.exists();
 
             try {
-                if(appending){
+                if(appending && exists){
                     String text = readFile(filePath);
                     System.setErr(new PrintStream(filePath));
                     System.err.append(text);
