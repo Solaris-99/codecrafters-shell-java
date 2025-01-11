@@ -161,8 +161,15 @@ public class Main {
                 appending = true;
                 opInd = stdOutAppend;
             }
+            String filePath;
+            String pathArg = arguments.getArg(opInd+1);
+            if(pathArg.startsWith(".")){
+                filePath = new File(System.getProperty("user.dir"),pathArg).getPath();
+            }
+            else{
+                filePath = new File(pathArg).getPath();
+            }
 
-            String filePath = new File(System.getProperty("user.dir"),arguments.getArg(opInd+1)).getPath();
 
             try {
                 if(appending){
@@ -187,7 +194,15 @@ public class Main {
                 appending = true;
                 opInd = stdErrAppend;
             }
-            String filePath = arguments.getArg(opInd+1);
+            String filePath;
+            String pathArg = arguments.getArg(opInd+1);
+            if(pathArg.startsWith(".")){
+                filePath = new File(System.getProperty("user.dir"),pathArg).getPath();
+            }
+            else{
+                filePath = new File(pathArg).getPath();
+            }
+
             try {
                 if(appending){
                     String text = readFile(filePath);
